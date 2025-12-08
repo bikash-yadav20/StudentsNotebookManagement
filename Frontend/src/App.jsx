@@ -1,31 +1,42 @@
-import React from "react";
+import React, { useContext } from "react";
 import NavBar from "./Components/NavBar";
 import SideBar from "./Components/SideBar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import CheckNotebooks from "./Pages/CheckNotebooks";
 import Reports from "./Pages/Reports";
-import StudentProvider from "../context/StudentsContext"
+import StudentProvider, { StudentsContext } from "../context/StudentsContext";
+import LoginForm from "./Pages/LoginForm";
 
-const App = () => {
+const AppContent = () => {
+  const { isLoggedIn } = useContext(StudentsContext);
+
+  if (!isLoggedIn) {
+    // ✅ Block entire app until login
+    return <LoginForm />;
+  }
+
   return (
-    <StudentProvider>
-      <BrowserRouter>
-        <NavBar />
-        <div className="flex">
-          <SideBar />
-
-          <div className="flex-1 p-6">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/check-notebook" element={<CheckNotebooks />} />
-              <Route path="/reports" element={<Reports />} />
-            </Routes>
-          </div>
+    <BrowserRouter>
+      <NavBar />
+      <div className="flex">
+        <SideBar />
+        <div className="flex-1 p-6">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/check-notebook" element={<CheckNotebooks />} />
+            <Route path="/reports" element={<Reports />} />
+          </Routes>
         </div>
-      </BrowserRouter>
-    </StudentProvider>
+      </div>
+    </BrowserRouter>
   );
 };
+
+const App = () => (
+  <StudentProvider>
+    <AppContent />
+  </StudentProvider>
+);
 
 export default App;

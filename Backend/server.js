@@ -5,6 +5,7 @@ import cors from "cors";
 import StudentsRoutes from "./routes/StudentsRoutes.js";
 import SubjectsRoutes from "./routes/Subjects.js";
 import Check from "./routes/Check.js";
+import authRoute from "./routes/authRoute.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ mongoose.connect(MONGO_URL)
     });
 
 app.use("/api", StudentsRoutes);
+app.use("/api", authRoute);
 app.use("/api/subjects", SubjectsRoutes);
 app.use("/api/student", Check);
 

@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/kaizenlogo-removebg-preview (1).png'
+import { StudentsContext } from '../../context/StudentsContext';
 
 const SideBar = () => {
+  const {logout} = useContext(StudentsContext);
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -48,7 +50,12 @@ const SideBar = () => {
           </Link>
           <Link to="/" className="block py-2 px-3 rounded hover:bg-blue-100 text-gray-700">
             Settings
-          </Link>
+          </Link> 
+          <button onClick={logout}>
+            <Link to="/login"
+          className='text-red-500 font-bold'>LogOut</Link>
+          </button>
+          
         </nav>
       </div>
     </div>
