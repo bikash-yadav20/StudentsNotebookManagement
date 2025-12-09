@@ -14,7 +14,7 @@ const StudentProvider = ({ children }) => {
       setCredentials(JSON.parse(storedCreds));
       setIsLoggedIn(true);
     }
-  })
+  }, []);
 
   const login = (creds) => {
     setCredentials(creds);
