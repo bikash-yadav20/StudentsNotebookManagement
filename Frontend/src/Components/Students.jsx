@@ -15,6 +15,7 @@ const Students = () => {
 
   const [subjects, setSubjects] = useState([]);
   const [activeSubjectIndex, setActiveSubjectIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -169,6 +170,8 @@ const Students = () => {
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="text"
             placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
             Search
@@ -179,25 +182,31 @@ const Students = () => {
 
       <div className="mt-6">
         {/* Student list */}
-        {!selectedStudent && students.length > 0 && (
-          <ul className="space-y-2">
-            {students.map((stu) => (
-              <li
-                key={stu._id}
-                className="flex justify-between bg-blue-200 px-4 py-4 rounded"
-              >
-                <span>{stu.roll}</span>
-                <span>{stu.name}</span>
-                <button
-                  onClick={() => handleCheck(stu)}
-                  className="bg-green-500 text-white px-3 py-1 rounded"
-                >
-                  Check
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+       {!selectedStudent && students.length > 0 && (
+  <ul className="space-y-2">
+    {students.filter(stu =>
+  (stu.name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+  (stu.roll?.toString().includes(searchTerm))
+)
+
+      .map(stu => (
+        <li
+          key={stu._id}
+          className="flex justify-between bg-blue-200 px-4 py-4 rounded"
+        >
+          <span>{stu.roll}</span>
+          <span>{stu.name}</span>
+          <button
+            onClick={() => handleCheck(stu)}
+            className="bg-green-500 text-white px-3 py-1 rounded"
+          >
+            Check
+          </button>
+        </li>
+      ))}
+  </ul>
+)}
+
 
         {/* Subject list */}
         {selectedStudent && activeSubjectIndex === null && (
