@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-
 const StudentsList = () => {
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
@@ -112,79 +111,83 @@ const StudentsList = () => {
         </button>
       </div>
 
-     {/* Students List */}
-{!showReport && (
-  <div className="mt-6">
-    {students.length > 0 ? (
-      <ul className="space-y-2">
-        {students.map((stu) => (
-          <li
-            key={stu._id}
-            className="flex flex-row items-center justify-between bg-blue-200 px-4 py-4 rounded"
+      {/* Students List */}
+      {!showReport && (
+        <div className="mt-6">
+          {students.length > 0 ? (
+            <ul className="space-y-2">
+              {students.map((stu) => (
+                <li
+                  key={stu._id}
+                  className="flex flex-row items-center justify-between bg-blue-200 px-4 py-4 rounded"
+                >
+                  <span>{stu.roll}</span>
+                  <span>{stu.name}</span>
+                  <button
+                    onClick={() => handleViewReport(stu._id)}
+                    className="bg-green-500 text-white px-3 py-1 rounded cursor-pointer"
+                  >
+                    View report
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500">No students found</p>
+          )}
+        </div>
+      )}
+
+      {/* Report Table */}
+      {showReport && reportData && (
+        <div className="mt-6 p-6 border rounded shadow">
+          <h2 className="text-2xl font-bold mb-4 text-center">
+            Report For {reportData.name} ({reportData.class} - {reportData.section})
+          </h2>
+          <table className="table-auto border-collapse border border-gray-300 w-full text-center shadow-lg rounded-lg">
+            <thead>
+              <tr className="bg-gray-400 text-white">
+                <th className="px-4 py-2 border">Subjects</th>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <th key={i} className="px-4 py-2 border">Check {i + 1}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {(reportData.notebookChecks || []).map((item, idx) => (
+                <tr key={idx} className="hover:bg-gray-100">
+                  <td className="px-4 py-2 border">{item.subject}</td>
+                  {item.checks.map((checked, i) => (
+                    <td key={i} className="border px-2 py-2">
+                      {checked ? (
+                        <>
+                          ✅
+                          {item.remarks && item.remarks[i] && (
+                            <div className="text-xs text-gray-600 mt-1">
+                              {item.remarks[i].text}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        "❌"
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Back button to show list again */}
+          <button
+            onClick={() => setShowReport(false)}
+            className="mt-4 bg-gray-600 text-white px-4 py-2 rounded"
           >
-            <span>{stu.roll}</span>
-            <span>{stu.name}</span>
-            <button
-              onClick={() => handleViewReport(stu._id)}
-              className="bg-green-500 text-white px-3 py-1 rounded cursor-pointer"
-            >
-              View report
-            </button>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p className="text-gray-500">No students found</p>
-    )}
-  </div>
-)}
-
-{/* Report Table */}
-{showReport && reportData && (
-  <div className="mt-6 p-6 border rounded shadow">
-    <h2 className="text-2xl font-bold mb-4 text-center">
-      Report For {reportData.name} ({reportData.class} - {reportData.section})
-    </h2>
-    <table className="table-auto border-collapse border border-gray-300 w-full text-center shadow-lg rounded-lg">
-      <thead>
-        <tr className="bg-gray-400 text-white">
-          <th className="px-4 py-2 border">Subjects</th>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <th key={i} className="px-4 py-2 border">Check {i + 1}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {(reportData.notebookChecks || []).map((item, idx) => (
-          <tr key={idx} className="hover:bg-gray-100">
-            <td className="px-4 py-2 border">{item.subject}</td>
-            {item.checks.map((checked, i) => (
-              <td key={i} className="border px-2 py-2">
-                {checked ? "✅" : "❌"}
-                {item.remarks && item.remarks.length > 0 && (
-                  <div className="text-xs text-gray-600 mt-1">
-                    {item.remarks[item.remarks.length - 1].text}
-                  </div>
-                )}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-
-    {/* Back button to show list again */}
-    <button
-    
-      onClick={() => setShowReport(false)}
-      className="mt-4 bg-gray-600 text-white px-4 py-2 rounded"
-    >
-       <FontAwesomeIcon icon={faArrowLeft} />
-      Back to students
-    </button>
-  </div>
-)}
-
+            <FontAwesomeIcon icon={faArrowLeft} />
+            Back to students
+          </button>
+        </div>
+      )}
     </div>
   );
 };
