@@ -45,7 +45,7 @@ const SideBar = () => {
           <Link to="/reports" className="block py-2 px-3 rounded hover:bg-blue-100 text-gray-700">
             Reports
           </Link>
-          <Link to="/" className="block py-2 px-3 rounded hover:bg-blue-100 text-gray-700">
+          <Link to="/students" className="block py-2 px-3 rounded hover:bg-blue-100 text-gray-700">
             Students
           </Link>
           <Link to="/" className="block py-2 px-3 rounded hover:bg-blue-100 text-gray-700">

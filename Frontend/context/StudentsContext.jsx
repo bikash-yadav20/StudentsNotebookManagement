@@ -7,6 +7,7 @@ const StudentProvider = ({ children }) => {
   const [reportData, setReportData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [credentetials, setCredentials] = useState(null);
+  const [activeEdit, setActiveEdit] = useState(false)
 
   useEffect(() => {
     const storedCreds = localStorage.getItem("credentials")
@@ -31,7 +32,7 @@ const StudentProvider = ({ children }) => {
   return (
     <StudentsContext.Provider
       value={{ selectedStudent, setSelectedStudent, reportData, setReportData, 
-        isLoggedIn, setIsLoggedIn, credentetials, setCredentials, login, logout }}
+        isLoggedIn, setIsLoggedIn, credentetials, setCredentials, login, logout, activeEdit, setActiveEdit }}
     >
       {children}
     </StudentsContext.Provider>

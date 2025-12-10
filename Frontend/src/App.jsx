@@ -7,6 +7,7 @@ import CheckNotebooks from "./Pages/CheckNotebooks";
 import Reports from "./Pages/Reports";
 import StudentProvider, { StudentsContext } from "../context/StudentsContext";
 import LoginForm from "./Pages/LoginForm";
+import Students from "./Pages/Students"
 
 const AppContent = () => {
   const { isLoggedIn } = useContext(StudentsContext);
@@ -26,6 +27,7 @@ const AppContent = () => {
             <Route path="/" element={<Home />} />
             <Route path="/check-notebook" element={<CheckNotebooks />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/students" element={<Students />} />
           </Routes>
         </div>
       </div>
