@@ -5,7 +5,7 @@ const studentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   class: { type: String, required: true },
   section: { type: String, required: true },
-
+  session: { type: String, required: true },
   notebookChecks: [
     {
       subject: { type: String, required: true },
@@ -16,6 +16,15 @@ const studentSchema = new mongoose.Schema({
           date: { type: Date, default: Date.now }
         }
       ]
+    }
+  ],
+  promotionHistory: [
+    {
+      fromClass: { type: String },
+      toClass: { type: String },
+      fromSession: { type: String },
+      toSession: { type: String },
+      promotedAt: { type: Date, default: Date.now }
     }
   ]
 });

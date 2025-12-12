@@ -13,27 +13,40 @@ const StudentsList = () => {
   const [loadingReport, setLoadingReport] = useState(false);
   const [showReport, setShowReport] = useState(false);
 
+  const [selectedSource, setSelectedSource] = useState("");
+  const [sessions, setSessions] = useState([]);
+
   const API_URL = import.meta.env.VITE_API_URL;
 
+
+
+    // Load sessions (active + archive)
+    useEffect(() => {
+      fetch(`${API_URL}/api/sessions`)
+        .then((res) => res.json())
+        .then((data) => setSessions(data))
+        .catch((err) => console.error(err));
+    }, []);
+
   useEffect(() => {
-    fetch(`${API_URL}/api/classes`)
+    fetch(`${API_URL}/api/classes?session=${selectedSession}&source=${selectedSource}`)
       .then((res) => res.json())
       .then((data) => setClasses(data))
       .catch((err) => console.error("Fetch error:", err));
-  }, []);
+  }, [selectedSession, selectedSource]);
 
   useEffect(() => {
     if (!selectedClass) return;
-    fetch(`${API_URL}/api/sections/${selectedClass}`)
+    fetch(`${API_URL}/api/sections/${selectedClass}?session=${selectedSession}&source=${selectedSource}`)
       .then((res) => res.json())
       .then((data) => setSections(data))
       .catch((err) => console.error(err));
-  }, [selectedClass]);
+  }, [selectedClass, selectedSession, selectedSource]);
 
   const handleSearch = () => {
     if (!selectedClass || !selectedSection || !selectedSession) return;
     fetch(
-      `${API_URL}/api/students/${selectedClass}/${selectedSection}?session=${selectedSession}`
+      `${API_URL}/api/students/${selectedClass}/${selectedSection}?session=${selectedSession}&source=${selectedSource}`
     )
       .then((res) => res.json())
       .then((data) => setStudents(data))
@@ -59,6 +72,19 @@ const StudentsList = () => {
       {/* Dropdowns */}
       <h2 className="text-xl font-semibold mb-4">Select Class</h2>
       <div className="sm:flex flex-row gap-6">
+         {/* Session Dropdown */}
+        <select
+          className="text-black border rounded-md px-3 py-2"
+          value={selectedSession}
+          onChange={(e) => setSelectedSession(e.target.value)}
+        >
+          <option value="">Select Session</option>
+          {sessions.map((s, i) => (
+            <option key={i} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
         {/* Class Dropdown */}
         <select
           className="text-black border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -90,16 +116,14 @@ const StudentsList = () => {
           ))}
         </select>
 
-        {/* Session Dropdown */}
+        {/* Source Toggle (active/archive) */}
         <select
-          className="text-black border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={selectedSession}
-          onChange={(e) => setSelectedSession(e.target.value)}
+          className="text-green-500 border rounded-md px-3 py-2"
+          value={selectedSource}
+          onChange={(e) => setSelectedSource(e.target.value)}
         >
-          <option value="">Session</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
+          <option value="active">Active</option>
+          <option value="archive">Archive</option>
         </select>
 
         {/* Search Button */}

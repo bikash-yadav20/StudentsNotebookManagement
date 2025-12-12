@@ -17,21 +17,35 @@ const Students = () => {
   const [activeSubjectIndex, setActiveSubjectIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [clickedSearch, setClickedSearch] = useState(false);
+  const [selectedSource, setSelectedSource] = useState("");
+  const [sessions, setSessions] = useState([]);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
+  // Load sessions (active + archive)
+  useEffect(() => {
+    fetch(`${API_URL}/api/sessions`)
+      .then((res) => res.json())
+      .then((data) => setSessions(data))
+      .catch((err) => console.error(err));
+  }, []);
+
   // Fetch classes
   useEffect(() => {
-    fetch(`${API_URL}/api/classes`)
+    fetch(
+      `${API_URL}/api/classes?session=${selectedSession}&source=${selectedSource}`
+    )
       .then((res) => res.json())
       .then((data) => setClasses(data))
       .catch((err) => console.error("Fetch error:", err));
-  }, []);
+  }, [selectedSession, selectedSource]);
 
   // Fetch sections when class changes
   useEffect(() => {
     if (!selectedClass) return;
-    fetch(`${API_URL}/api/sections/${selectedClass}`)
+    fetch(
+      `${API_URL}/api/sections/${selectedClass}?session=${selectedSession}&source=${selectedSource}`
+    )
       .then((res) => res.json())
       .then((data) => setSections(data))
       .catch((err) => console.error(err));
@@ -41,7 +55,7 @@ const Students = () => {
   const handleSearch = () => {
     if (!selectedClass || !selectedSection || !selectedSession) return;
     fetch(
-      `${API_URL}/api/students/${selectedClass}/${selectedSection}?session=${selectedSession}`
+      `${API_URL}/api/students/${selectedClass}/${selectedSection}?session=${selectedSession}&source=${selectedSource}`
     )
       .then((res) => res.json())
       .then((data) => setStudents(data))
@@ -115,6 +129,19 @@ const Students = () => {
     <div className="p-6">
       <h2 className="text-xl font-semibold mb-4">Select Class</h2>
       <div className="sm:flex flex-row gap-6">
+        {/* Session Dropdown */}
+        <select
+          className="text-black border rounded-md px-3 py-2"
+          value={selectedSession}
+          onChange={(e) => setSelectedSession(e.target.value)}
+        >
+          <option value="">Select Session</option>
+          {sessions.map((s, i) => (
+            <option key={i} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
         {/* Class Dropdown */}
         <select
           className="text-black border rounded-md px-3 py-2"
@@ -147,21 +174,22 @@ const Students = () => {
           ))}
         </select>
 
-        {/* Session Dropdown */}
+        {/* Source Toggle (active/archive) */}
         <select
-          className="text-black border rounded-md px-3 py-2"
-          value={selectedSession}
-          onChange={(e) => setSelectedSession(e.target.value)}
+          className="text-green-500 border rounded-md px-3 py-2"
+          value={selectedSource}
+          onChange={(e) => setSelectedSource(e.target.value)}
         >
-          <option value="">Session</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
+          <option value="active">Active</option>
+          <option value="archive">Archive</option>
         </select>
 
         {/* Search Button */}
         <button
-          onClick={() => {handleSearch(); setClickedSearch(true)}}
+          onClick={() => {
+            handleSearch();
+            setClickedSearch(true);
+          }}
           className="bg-blue-800 rounded text-white w-32"
         >
           Search
@@ -183,11 +211,13 @@ const Students = () => {
       </div>
 
       <div className="mt-6">
-      {!selectedStudent && clickedSearch &&
-        <div className="flex justify-center m-4">
-          <p className="text-lg font-bold text-red-400">Listed students from {selectedClass}</p>
-        </div>
-      }
+        {!selectedStudent && clickedSearch && (
+          <div className="flex justify-center m-4">
+            <p className="text-lg font-bold text-red-400">
+              Listed students from {selectedClass} Session: {selectedSession}
+            </p>
+          </div>
+        )}
         {/* Student list */}
         {!selectedStudent && students.length > 0 && (
           <ul className="space-y-2">
