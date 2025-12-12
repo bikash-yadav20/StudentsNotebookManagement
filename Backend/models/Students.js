@@ -6,6 +6,7 @@ const studentSchema = new mongoose.Schema({
   class: { type: String, required: true },
   section: { type: String, required: true },
   session: { type: String, required: true },
+  source: { type: String, enum: ["active", "archive"], default: "active" },
   notebookChecks: [
     {
       subject: { type: String, required: true },
@@ -15,7 +16,8 @@ const studentSchema = new mongoose.Schema({
           text: { type: String }, 
           date: { type: Date, default: Date.now }
         }
-      ]
+      ],
+      session: { type: String,}
     }
   ],
   promotionHistory: [

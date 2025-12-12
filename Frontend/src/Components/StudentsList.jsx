@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const StudentsList = () => {
   const [classes, setClasses] = useState([]);
@@ -18,18 +18,18 @@ const StudentsList = () => {
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-
-
-    // Load sessions (active + archive)
-    useEffect(() => {
-      fetch(`${API_URL}/api/sessions`)
-        .then((res) => res.json())
-        .then((data) => setSessions(data))
-        .catch((err) => console.error(err));
-    }, []);
+  // Load sessions (active + archive)
+  useEffect(() => {
+    fetch(`${API_URL}/api/sessions`)
+      .then((res) => res.json())
+      .then((data) => setSessions(data))
+      .catch((err) => console.error(err));
+  }, []);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/classes?session=${selectedSession}&source=${selectedSource}`)
+    fetch(
+      `${API_URL}/api/classes?session=${selectedSession}&source=${selectedSource}`
+    )
       .then((res) => res.json())
       .then((data) => setClasses(data))
       .catch((err) => console.error("Fetch error:", err));
@@ -37,7 +37,9 @@ const StudentsList = () => {
 
   useEffect(() => {
     if (!selectedClass) return;
-    fetch(`${API_URL}/api/sections/${selectedClass}?session=${selectedSession}&source=${selectedSource}`)
+    fetch(
+      `${API_URL}/api/sections/${selectedClass}?session=${selectedSession}&source=${selectedSource}`
+    )
       .then((res) => res.json())
       .then((data) => setSections(data))
       .catch((err) => console.error(err));
@@ -57,7 +59,9 @@ const StudentsList = () => {
     setLoadingReport(true);
     setShowReport(true);
     try {
-      const res = await fetch(`${API_URL}/api/student/${studentId}/report`);
+      const res = await fetch(
+        `${API_URL}/api/student/${studentId}/report?session=${selectedSession}&source=${selectedSource}`
+      );
       const data = await res.json();
       setReportData(data);
     } catch (err) {
@@ -72,7 +76,7 @@ const StudentsList = () => {
       {/* Dropdowns */}
       <h2 className="text-xl font-semibold mb-4">Select Class</h2>
       <div className="sm:flex flex-row gap-6">
-         {/* Session Dropdown */}
+        {/* Session Dropdown */}
         <select
           className="text-black border rounded-md px-3 py-2"
           value={selectedSession}
@@ -166,14 +170,17 @@ const StudentsList = () => {
       {showReport && reportData && (
         <div className="mt-6 p-6 border rounded shadow">
           <h2 className="text-2xl font-bold mb-4 text-center">
-            Report For {reportData.name} ({reportData.class} - {reportData.section})
+            Report For {reportData.name} ({reportData.class} -{" "}
+            {reportData.section})
           </h2>
           <table className="table-auto border-collapse border border-gray-300 w-full text-center shadow-lg rounded-lg">
             <thead>
               <tr className="bg-gray-400 text-white">
                 <th className="px-4 py-2 border">Subjects</th>
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <th key={i} className="px-4 py-2 border">Check {i + 1}</th>
+                  <th key={i} className="px-4 py-2 border">
+                    Check {i + 1}
+                  </th>
                 ))}
               </tr>
             </thead>
