@@ -20,8 +20,8 @@ const StudentModify = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          oldSession: "2027-28", //will make this dynamic letter
-          newSession: "2028-29",
+          oldSession: "2025-26", //will make this dynamic letter
+          newSession: "2026-27",
         }),
       });
       const data = await res.json();
